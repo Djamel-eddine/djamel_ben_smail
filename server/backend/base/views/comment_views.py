@@ -1,10 +1,11 @@
 from base.models import Comment, Compaign
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from base.serializers import CommentSerializer
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 
-
+## getters ------------------------
 @api_view(["GET"])
 def getUserCommentsByCompaign(request, userID, compaignID):
     user = Compaign.objects.get(id=userID)
@@ -30,7 +31,9 @@ def getCompaignComments(request, compaignID):
     return Response(serializer.data)
 
 
+## comment creator -----------------
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def createComment(request):
     data = request.data
 
@@ -41,7 +44,9 @@ def createComment(request):
     return Response(serializer.data)
 
 
+## comment updator -----------------
 @api_view(["PUT"])
+@permission_classes([IsAuthenticated])
 def updateComments(request, id):
     data = request.data
     comment = Comment.objects.get(id=id)
@@ -53,8 +58,10 @@ def updateComments(request, id):
     return Response(serializer.data)
 
 
+## comment delete view -----------------
 @api_view(["DELETE"])
-def deleteComments(request, id):
+@permission_classes([IsAuthenticated])
+def deleteComment(request, id):
     comment = Comment.objects.get(id=id)
     comment.delete()
     return Response("Comment Deleted")
