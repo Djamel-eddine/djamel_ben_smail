@@ -16,7 +16,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
 
-class stepSerializer(serializers.ModelSerializer):
+class StepSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
         fields = "__all__"
