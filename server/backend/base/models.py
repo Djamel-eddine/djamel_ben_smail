@@ -114,6 +114,8 @@ class CompaignNeeds(models.Model):
 
     compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE, null=False)
     need = models.ForeignKey(Need, on_delete=models.CASCADE, null=False)
+    qte = models.IntegerField(null=True, blank=False)
+    qteDonated = models.IntegerField(null=True, blank=False, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True, editable=False)
 
@@ -128,6 +130,7 @@ class CompaignSteps(models.Model):
     step = models.ForeignKey(Step, on_delete=models.CASCADE, null=False)
     description = models.CharField(max_length=200, default="")
     range = models.IntegerField(null=True, blank=False)
+    isDone = models.BooleanField(null=True, blank=False, default=False)
     createdAt = models.DateTimeField(auto_now_add=True)
     _id = models.AutoField(primary_key=True, editable=False)
 
