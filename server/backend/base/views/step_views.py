@@ -47,7 +47,7 @@ def createStep(request):
 ## step updator -----------------
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
-def updateSteps(request, id):
+def updateStep(request, id):
     data = request.data
     step = Step.objects.get(id=id)
     step.name = data["name"]
