@@ -20,7 +20,6 @@ def getType(request, id):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def getCompaignType(request, compaignID):
     compaign = Compaign.objects.get(id=compaignID)
     type = Type.objects.filter(compaign=compaign)
@@ -41,7 +40,7 @@ def createType(request):
 ## comment updator -----------------
 @api_view(["PUT"])
 @permission_classes([IsAdminUser])
-def updateTypes(request, id):
+def updateType(request, id):
     data = request.data
     type = Type.objects.get(id=id)
     type.name = data["name"]
