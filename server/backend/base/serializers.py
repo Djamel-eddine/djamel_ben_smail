@@ -84,6 +84,8 @@ class UserSerializer(serializers.ModelSerializer):
             "id",
             "_id",
             "email",
+            "first_name",
+            "last_name",
             "username",
             "isAdmin",
         ]
@@ -112,6 +114,8 @@ class UserSerializerWithToken(UserSerializer):
             "_id",
             "email",
             "username",
+            "first_name",
+            "last_name",
             "isAdmin",
             "token",
         ]

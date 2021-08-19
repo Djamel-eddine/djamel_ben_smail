@@ -1,21 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+import uuid
 
 ## profile of a person -not an association- --------------------
 class PersonProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    firstname = models.CharField(max_length=50)
-    lastname = models.CharField(max_length=50)
     phone = models.CharField(max_length=50, default="")
     dateOfBirth = models.DateTimeField(auto_now_add=False, default="")
     profession = models.CharField(max_length=50, default="")
     wilaya = models.CharField(max_length=50)
     address = models.CharField(max_length=200)
     address2 = models.CharField(max_length=200, blank=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
-        return self.firstname
+        return self.user.username
 
 
 ## association profile --------------------
@@ -28,6 +28,8 @@ class AssociationProfile(models.Model):
     associationNumber = models.CharField(max_length=200)
     logo = models.CharField(max_length=50, default="")
     baseWilaya = models.CharField(max_length=50)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.name
@@ -39,7 +41,7 @@ class Type(models.Model):
     name = models.CharField(max_length=50, null=True, blank=False)
     description = models.CharField(max_length=200, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.name
@@ -51,7 +53,7 @@ class Need(models.Model):
     name = models.CharField(max_length=50, null=True, blank=False)
     description = models.CharField(max_length=200, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.name
@@ -63,7 +65,7 @@ class Step(models.Model):
     name = models.CharField(max_length=50, null=True, blank=False)
     type = models.ForeignKey(Type, on_delete=models.CASCADE, null=True)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.name
@@ -75,7 +77,7 @@ class Wilaya(models.Model):
     number = models.IntegerField(null=True, blank=False)
     name = models.CharField(max_length=50, null=True, blank=False)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.name
@@ -92,6 +94,8 @@ class Compaign(models.Model):
     daira = models.CharField(max_length=50, default="")
     baladia = models.CharField(max_length=50, default="")
     image_url = models.CharField(max_length=50, default="")
+    createdAt = models.DateTimeField(auto_now_add=True)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.name
@@ -103,7 +107,7 @@ class AssociationWilayas(models.Model):
     association = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     wilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE, null=True)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.association.name
@@ -117,7 +121,7 @@ class CompaignNeeds(models.Model):
     qte = models.IntegerField(null=True, blank=False)
     qteDonated = models.IntegerField(null=True, blank=False, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.compaign.name
@@ -132,7 +136,7 @@ class CompaignSteps(models.Model):
     range = models.IntegerField(null=True, blank=False)
     isDone = models.BooleanField(null=True, blank=False, default=False)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.compaign.name
@@ -145,7 +149,7 @@ class Comment(models.Model):
     title = models.CharField(max_length=50, null=True, blank=False)
     payload = models.CharField(max_length=200, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
-    _id = models.AutoField(primary_key=True, editable=False)
+    _id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     def __str__(self):
         return self.title
