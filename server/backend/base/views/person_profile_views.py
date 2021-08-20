@@ -1,4 +1,4 @@
-from base.models import Compaign, PersonProfile,Wilaya
+from base.models import Compaign, PersonProfile, Wilaya
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from base.serializers import PersonProfileSerializer
@@ -35,6 +35,7 @@ def createPersonProfile(request):
         isMale=data["isMale"],
         dateOfBirth=data["dateOfBirth"],
         profession=data["profession"],
+        image=request.FILES.get("image"),
         wilaya=wilaya,
         address=data["address"],
         address2=data["address2"],
@@ -53,6 +54,7 @@ def updatePersonProfile(request, id):
     profile = PersonProfile.objects.get(user=user)
     profile.phone = data["phone"]
     profile.isMale = data["isMale"]
+    profile.image = request.FILES.get("image")
     profile.wilaya = wilaya
     profile.dateOfBirth = data["dateOfBirth"]
     profile.profession = data["profession"]

@@ -7,7 +7,8 @@ from base.serializers import UserSerializer, UserSerializerWithToken
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from django.contrib.auth.hashers import make_password
-
+from django.contrib.auth.models import User
+import uuid
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
@@ -31,12 +32,13 @@ def registerUser(request):
     user = User.objects.create(
         first_name=data["first_name"],
         last_name=data["last_name"],
-        image=data["image"],
         email=data["email"],
         username=data["email"],
+        is_staff=data["is_staff"],
         password=make_password(data["password"]),
+        id = uuid.uuid4
     )
-    if data["isAdmin"]:
+    """ if data["is_staff"]:
         AssociationProfile.objects.create(
             user=user,
             phone=data["phone"],
@@ -54,13 +56,14 @@ def registerUser(request):
         PersonProfile.objects.create(
             user=user,
             phone=data["phone"],
+            image=data["image"],
             isMale=data["isMale"],
             dateOfBirth=data["dateOfBirth"],
             profession=data["profession"],
             wilaya=wilaya,
             address=data["address"],
             address2=data["address2"],
-        )
+        ) """
 
     serializer = UserSerializerWithToken(user, many=False)
     return Response(serializer.data)
@@ -102,7 +105,7 @@ def getUsers(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated])
 def getUserById(request, pk):
     user = User.objects.get(id=pk)
     serializer = UserSerializer(user, many=False)

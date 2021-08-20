@@ -32,7 +32,9 @@ def getCompaignType(request, compaignID):
 @permission_classes([IsAdminUser])
 def createType(request):
     data = request.data
-    type = Type.objects.create(name=data["name"], coverImage=data["coverImage"], description=data["description"])
+    type = Type.objects.create(
+        name=data["name"], coverImage=request.FILES.get("coverImage"), description=data["description"]
+    )
     serializer = TypeSerializer(type, many=False)
     return Response(serializer.data)
 
@@ -45,6 +47,7 @@ def updateType(request, id):
     type = Type.objects.get(id=id)
     type.name = data["name"]
     type.description = data["description"]
+    type.coverImage = request.FILES.get("coverImage")
     type.save()
 
     serializer = TypeSerializer(type, many=False)

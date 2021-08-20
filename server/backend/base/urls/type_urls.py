@@ -4,7 +4,7 @@ from base.views import type_views as views
 
 urlpatterns = [
     path("register/", views.createType, name="create-type"),
-    path("update/<str:id>/", views.updateTypes, name="update-type"),
+    path("update/<str:id>/", views.updateType, name="update-type"),
     path("compaign?<str:compaignID>/", views.getCompaignType, name="compaign_type"),
     path("<str:id>/", views.getType, name="get_type"),
     path("", views.getTypes, name="get_types"),
