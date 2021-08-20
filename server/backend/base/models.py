@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 import uuid
 
 from django.db.models.aggregates import Max
+from django.db.models.fields import BLANK_CHOICE_DASH
 
 
 ## list of wilayas --------------------------------------
@@ -22,6 +23,7 @@ class Wilaya(models.Model):
 class PersonProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=50, default="")
+    image = models.ImageField(null=True, blank=True)
     isMale = models.BooleanField(default=True)
     dateOfBirth = models.DateTimeField(auto_now_add=False, default="")
     profession = models.CharField(max_length=100, default="")
@@ -43,7 +45,8 @@ class AssociationProfile(models.Model):
     name = models.CharField(max_length=50)
     activity = models.CharField(max_length=200)
     associationNumber = models.CharField(max_length=200)
-    logo = models.CharField(max_length=50, default="")
+    logo = models.ImageField(null=True, blank=True)
+    coverImage = models.ImageField(null=True, blank=True)
     baseWilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE, null=False)
     facebook = models.CharField(max_length=50, blank=True, default="")
     twitter = models.CharField(max_length=50, blank=True, default="")
@@ -59,6 +62,7 @@ class Type(models.Model):
 
     name = models.CharField(max_length=50, blank=False)
     description = models.CharField(max_length=200, blank=True, default="")
+    coverImage = models.ImageField(null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -116,7 +120,7 @@ class Compaign(models.Model):
     GPS = models.CharField(max_length=200, default="")
     daira = models.CharField(max_length=50, default="")
     baladia = models.CharField(max_length=50, default="")
-    imageUrl = models.CharField(max_length=200, default="")
+    imageUrl = models.ImageField(null=True, blank=True)
     isDone = models.BooleanField(default=False)
     isArchived = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)

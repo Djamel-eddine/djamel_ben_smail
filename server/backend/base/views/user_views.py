@@ -1,4 +1,4 @@
-from server.backend.base.models import AssociationProfile, PersonProfile
+from base.models import AssociationProfile, PersonProfile, Wilaya
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
@@ -27,10 +27,11 @@ class MyTokenObtainPairView(TokenObtainPairView):
 @api_view(["POST"])
 def registerUser(request):
     data = request.data
-    wilaya = Wilaya.objects.get(id= data['wilaya'])
+    wilaya = Wilaya.objects.get(id=data["wilaya"])
     user = User.objects.create(
         first_name=data["first_name"],
         last_name=data["last_name"],
+        image=data["image"],
         email=data["email"],
         username=data["email"],
         password=make_password(data["password"]),
@@ -43,14 +44,17 @@ def registerUser(request):
             name=data["name"],
             activity=data["activity"],
             associationNumber=data["associationNumber"],
-            logo=data["logo"],facebook=data["facebook"],twitter=data["twitter"],
+            logo=data["logo"],
+            coverImage=data["coverImage"],
+            facebook=data["facebook"],
+            twitter=data["twitter"],
             baseWilaya=wilaya,
-     
         )
     else:
         PersonProfile.objects.create(
             user=user,
-            phone=data["phone"],isMale=data["isMale"],
+            phone=data["phone"],
+            isMale=data["isMale"],
             dateOfBirth=data["dateOfBirth"],
             profession=data["profession"],
             wilaya=wilaya,
