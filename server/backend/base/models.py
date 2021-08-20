@@ -1,16 +1,33 @@
+import enum
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+
+from django.db.models.aggregates import Max
+
+
+## list of wilayas --------------------------------------
+class Wilaya(models.Model):
+
+    number = models.IntegerField(blank=False)
+    name = models.CharField(max_length=50, blank=False)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+
+    def __str__(self):
+        return self.name
+
 
 ## profile of a person -not an association- --------------------
 class PersonProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     phone = models.CharField(max_length=50, default="")
+    isMale = models.BooleanField(default=True)
     dateOfBirth = models.DateTimeField(auto_now_add=False, default="")
-    profession = models.CharField(max_length=50, default="")
-    wilaya = models.CharField(max_length=50)
-    address = models.CharField(max_length=200)
-    address2 = models.CharField(max_length=200, blank=True)
+    profession = models.CharField(max_length=100, default="")
+    wilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE)
+    address = models.CharField(max_length=200, blank=True, default="")
+    address2 = models.CharField(max_length=200, blank=True, default="")
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -27,7 +44,9 @@ class AssociationProfile(models.Model):
     activity = models.CharField(max_length=200)
     associationNumber = models.CharField(max_length=200)
     logo = models.CharField(max_length=50, default="")
-    baseWilaya = models.CharField(max_length=50)
+    baseWilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE, null=False)
+    facebook = models.CharField(max_length=50, blank=True, default="")
+    twitter = models.CharField(max_length=50, blank=True, default="")
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -38,8 +57,21 @@ class AssociationProfile(models.Model):
 ## type of compaigns --------------------
 class Type(models.Model):
 
-    name = models.CharField(max_length=50, null=True, blank=False)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    name = models.CharField(max_length=50, blank=False)
+    description = models.CharField(max_length=200, blank=True, default="")
+    createdAt = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
+## need units ---------------------------
+class Unit(models.Model):
+
+    name = models.CharField(max_length=50, blank=False)
+    acronym = models.CharField(max_length=5, blank=True)
+    isFloat = models.BooleanField(default=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -50,8 +82,9 @@ class Type(models.Model):
 ## list of needs --------------------
 class Need(models.Model):
 
-    name = models.CharField(max_length=50, null=True, blank=False)
-    description = models.CharField(max_length=200, null=True, blank=True)
+    name = models.CharField(max_length=50, blank=False)
+    description = models.CharField(max_length=200, blank=True)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -63,19 +96,7 @@ class Need(models.Model):
 class Step(models.Model):
 
     name = models.CharField(max_length=50, null=True, blank=False)
-    type = models.ForeignKey(Type, on_delete=models.CASCADE, null=True)
-    createdAt = models.DateTimeField(auto_now_add=True)
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-
-    def __str__(self):
-        return self.name
-
-
-## list of wilayas --------------------------------------
-class Wilaya(models.Model):
-
-    number = models.IntegerField(null=True, blank=False)
-    name = models.CharField(max_length=50, null=True, blank=False)
+    type = models.ForeignKey(Type, on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -85,15 +106,21 @@ class Wilaya(models.Model):
 
 ## compaign core ---------------------------------
 class Compaign(models.Model):
-    name = models.CharField(max_length=50)
-    description = models.CharField(max_length=200)
-    association = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    wilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE, null=True)
-    type = models.ForeignKey(Type, on_delete=models.CASCADE, null=True)
-    GPS = models.CharField(max_length=50, default="")
+    name = models.CharField(max_length=50, blank=False)
+    start = models.DateTimeField(auto_now_add=False, blank=False)
+    end = models.DateTimeField(auto_now_add=False, blank=False)
+    description = models.CharField(max_length=200, default="")
+    association = models.ForeignKey(User, on_delete=models.CASCADE)
+    wilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE)
+    type = models.ForeignKey(Type, on_delete=models.CASCADE)
+    GPS = models.CharField(max_length=200, default="")
     daira = models.CharField(max_length=50, default="")
     baladia = models.CharField(max_length=50, default="")
-    image_url = models.CharField(max_length=50, default="")
+    imageUrl = models.CharField(max_length=200, default="")
+    isDone = models.BooleanField(default=False)
+    isArchived = models.BooleanField(default=False)
+    likes = models.PositiveIntegerField(default=0)
+    dislikes = models.PositiveIntegerField(default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -104,22 +131,25 @@ class Compaign(models.Model):
 ## list of the wilayas where the associations is active --------------------
 class AssociationWilayas(models.Model):
 
-    association = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    wilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE, null=True)
+    association = models.ForeignKey(User, on_delete=models.CASCADE)
+    wilaya = models.ForeignKey(Wilaya, on_delete=models.CASCADE)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
     def __str__(self):
-        return self.association.name
+        return self.association.username
 
 
 ## list of the needs that the compaign needs --------------------
 class CompaignNeeds(models.Model):
 
-    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE, null=False)
-    need = models.ForeignKey(Need, on_delete=models.CASCADE, null=False)
-    qte = models.IntegerField(null=True, blank=False)
-    qteDonated = models.IntegerField(null=True, blank=False, default=0)
+    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE)
+    need = models.ForeignKey(Need, on_delete=models.CASCADE)
+    description = models.CharField(max_length=200, blank=True, default="")
+    level = models.PositiveIntegerField(default=1)
+    qteRequested = models.FloatField(blank=False)
+    qteDonated = models.FloatField(blank=False, default=0)
+    qteAccepted = models.FloatField(blank=False, default=0)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -130,11 +160,12 @@ class CompaignNeeds(models.Model):
 ## list of the steps in compaign --------------------
 class CompaignSteps(models.Model):
 
-    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE, null=False)
-    step = models.ForeignKey(Step, on_delete=models.CASCADE, null=False)
+    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE)
+    step = models.ForeignKey(Step, on_delete=models.CASCADE)
     description = models.CharField(max_length=200, default="")
-    range = models.IntegerField(null=True, blank=False)
-    isDone = models.BooleanField(null=True, blank=False, default=False)
+    range = models.IntegerField(blank=False)
+    isDone = models.BooleanField(blank=False, default=False)
+    completeDate = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
@@ -144,8 +175,8 @@ class CompaignSteps(models.Model):
 
 ##comments --------------------------
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
-    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE)
     title = models.CharField(max_length=50, null=True, blank=False)
     payload = models.CharField(max_length=200, null=True, blank=True)
     createdAt = models.DateTimeField(auto_now_add=True)
@@ -153,3 +184,41 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.title
+
+
+##store the person donations --------------------------
+class PersonDonation(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE, null=False)
+    need = models.ForeignKey(Need, on_delete=models.CASCADE, null=False)
+    qte = models.FloatField(default=1)
+    status = models.FloatField(default=1)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+##store the person reaction on compaign --------------------------
+class PersonCompaignReaction(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE)
+    isLike = models.BooleanField(default=True)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+
+    def __str__(self):
+        return self.user.username
+
+
+##store the person notifications --------------------------
+class Notifications(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    message = models.CharField(max_length=100, blank=False)
+    url = models.CharField(max_length=200, blank=False)
+    createdAt = models.DateTimeField(auto_now_add=True)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+
+    def __str__(self):
+        return self.user.username

@@ -125,7 +125,7 @@ class UserSerializerWithToken(UserSerializer):
         return str(token.access_token)
 
 
-class PersopnProfileSerializer(serializers.ModelSerializer):
+class PersonProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = PersonProfile
         fields = "__all__"
