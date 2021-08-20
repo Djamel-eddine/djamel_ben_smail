@@ -10,6 +10,10 @@ from .models import (
     CompaignNeeds,
     CompaignSteps,
     AssociationWilayas,
+    Unit,
+    PersonDonation,
+    PersonCompaignReaction,
+    Notifications,
 )
 from django.contrib.auth.models import User
 from rest_framework import serializers
@@ -19,6 +23,24 @@ from rest_framework_simplejwt.tokens import RefreshToken
 class StepSerializer(serializers.ModelSerializer):
     class Meta:
         model = Step
+        fields = "__all__"
+
+
+class PersonDonationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonDonation
+        fields = "__all__"
+
+
+class PersonCompaignReactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PersonCompaignReaction
+        fields = "__all__"
+
+
+class NotificationsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notifications
         fields = "__all__"
 
 
@@ -70,12 +92,16 @@ class AssociationWilayasSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
+class UnitSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = "__all__"
+
+
 """ user serializer ------------------------------------ """
 
 
 class UserSerializer(serializers.ModelSerializer):
-
-
     class Meta:
         model = User
         fields = [

@@ -30,6 +30,10 @@ urlpatterns = [
     path("api/steps/", include("base.urls.step_urls")),
     path("api/types/", include("base.urls.type_urls")),
     path("api/wilayas/", include("base.urls.wilaya_urls")),
+    path("api/units/", include("base.urls.unit_urls")),
+    path("api/notifications/", include("base.urls.notifications_urls")),
+    path("api/person_compaign_reaction/", include("base.urls.person_compaign_reaction_urls")),
+    path("api/person_donate/", include("base.urls.person_donate_urls")),
 ]
 
 
