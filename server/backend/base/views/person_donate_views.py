@@ -1,13 +1,13 @@
 from base.models import PersonDonation, Compaign, Need
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from base.serializers import PersonDonationSerializer
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 
 ## getters ------------------------
-##TODO define permissions
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getPersonDonationsByCompaign(request, userID, compaignID):
     user = Compaign.objects.get(id=userID)
     compaign = User.objects.get(id=compaignID)
@@ -17,6 +17,7 @@ def getPersonDonationsByCompaign(request, userID, compaignID):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getPersonDonations(request, userID):
     user = User.objects.get(id=userID)
     donations = PersonDonation.objects.filter(user=user)
@@ -25,6 +26,7 @@ def getPersonDonations(request, userID):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getCompaignDonations(request, compaignID):
     compaign = Compaign.objects.get(id=compaignID)
     donations = PersonDonation.objects.filter(compaign=compaign)
@@ -33,6 +35,7 @@ def getCompaignDonations(request, compaignID):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getAssociationDonations(request, associationID):
     association = User.objects.get(id=associationID)
     donations = PersonDonation.objects.filter(association=association)
@@ -41,6 +44,7 @@ def getAssociationDonations(request, associationID):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getAllDonations(request):
     donations = PersonDonation.objects.all()
     serializer = PersonDonationSerializer(donations, many=True)
@@ -48,6 +52,7 @@ def getAllDonations(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getDonationById(request, id):
     compaign = Compaign.objects.get(id=id)
     donation = PersonDonation.objects.filter(compaign=compaign)
@@ -91,7 +96,7 @@ def updatePersonDonation(request, id):
 
 ## here the Association part
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
 def updatePersonDonationStatus(request, id):
     data = request.data
     donation = PersonDonation.objects.get(id=id)
@@ -105,7 +110,7 @@ def updatePersonDonationStatus(request, id):
 
 
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
 def updatePersonDonationAcceptedQte(request, id):
     data = request.data
     donation = PersonDonation.objects.get(id=id)
@@ -117,7 +122,7 @@ def updatePersonDonationAcceptedQte(request, id):
 
 
 @api_view(["PUT"])
-@permission_classes([IsAuthenticated])
+@permission_classes([IsAdminUser])
 def updatePersonDonationDeliverdQte(request, id):
     data = request.data
     donation = PersonDonation.objects.get(id=id)
