@@ -66,10 +66,6 @@ def createCompaign(request):
         daira=data["daira"],
         baladia=data["baladia"],
         image=request.FILES.get("image"),
-        isDone=False,
-        isArchived=False,
-        likes=0,
-        dislikes=0,
     )
     serializer = CompaignSerializer(compaign, many=False)
     return Response(serializer.data)

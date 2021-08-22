@@ -11,7 +11,7 @@ urlpatterns = [
     path("", views.getAllCompaigns, name="get-compaigns"),
     path("<id:str>/", views.getAllCompaigns, name="get-compaign"),
     path("association?<str:userID>/", views.getAssociationCompaigns, name="get_association_compaigns"),
-    path("type?<str:typeID>/", views.getTypeCompaigns, name="type_compaign_compaigns"),
-    path("wilaya?<str:wilayaID>/", views.getWilayaCompaigns, name="wilaya_compaign_compaigns"),
+    path("type?<str:typeID>/", views.getTypeCompaigns, name="get_type_compaign_compaigns"),
+    path("wilaya?<str:wilayaID>/", views.getWilayaCompaigns, name="get_wilaya_compaign_compaigns"),
     path("delete/<str:id>/", views.deleteCompaign, name="delete_compaign"),
 ]
