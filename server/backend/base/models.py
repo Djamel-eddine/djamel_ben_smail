@@ -120,7 +120,7 @@ class Compaign(models.Model):
     GPS = models.CharField(max_length=200, default="")
     daira = models.CharField(max_length=50, default="")
     baladia = models.CharField(max_length=50, default="")
-    imageUrl = models.ImageField(null=True, blank=True)
+    image = models.ImageField(null=True, blank=True)
     isDone = models.BooleanField(default=False)
     isArchived = models.BooleanField(default=False)
     likes = models.PositiveIntegerField(default=0)
