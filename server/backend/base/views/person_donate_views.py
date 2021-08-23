@@ -1,9 +1,11 @@
-from base.models import PersonDonation, Compaign, Need
+from backend.base.constants.donation_status import DonationStatus
+from base.models import PersonDonation, Compaign, CompaignNeeds
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from base.serializers import PersonDonationSerializer
 from rest_framework.response import Response
 from django.contrib.auth.models import User
+
 
 ## getters ------------------------
 @api_view(["GET"])
@@ -45,6 +47,15 @@ def getAssociationDonations(request, associationID):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
+def getCompaignNeedDonations(request, compaignNeedID):
+    compaignNeed = CompaignNeeds.objects.get(id=compaignNeedID)
+    donations = PersonDonation.objects.filter(compaignNeed=compaignNeed)
+    serializer = PersonDonationSerializer(donations, many=True)
+    return Response(serializer.data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getAllDonations(request):
     donations = PersonDonation.objects.all()
     serializer = PersonDonationSerializer(donations, many=True)
@@ -67,12 +78,12 @@ def createPersonDonation(request):
     data = request.data
     user = request.user
     compaign = Compaign.objects.get(id=data["compaign"])
-    need = Need.objects.get(id=data["need"])
+    compaignNeed = CompaignNeeds.objects.get(id=data["need"])
     donation = PersonDonation.objects.create(
         qteDonated=data["qteDonated"],
         user=user,
         compaign=compaign,
-        need=need,
+        compaignNeed=compaignNeed,
     )
     serializer = PersonDonationSerializer(donation, many=False)
     return Response(serializer.data)
@@ -97,11 +108,35 @@ def updatePersonDonation(request, id):
 ## here the Association part
 @api_view(["PUT"])
 @permission_classes([IsAdminUser])
-def updatePersonDonationStatus(request, id):
+def acceptDonation(request, id):
     data = request.data
     donation = PersonDonation.objects.get(id=id)
-    donation.status = data["status"]
+    donation.status = DonationStatus.accepted
     donation.qteAccepted = data["qteAccepted"]
+    donation.save()
+
+    serializer = PersonDonationSerializer(donation, many=False)
+    return Response(serializer.data)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAdminUser])
+def refuseDonation(request, id):
+    donation = PersonDonation.objects.get(id=id)
+    donation.status = DonationStatus.refused
+    donation.qteAccepted = 0
+    donation.save()
+
+    serializer = PersonDonationSerializer(donation, many=False)
+    return Response(serializer.data)
+
+
+@api_view(["PUT"])
+@permission_classes([IsAdminUser])
+def setDelivered(request, id):
+    data = request.data
+    donation = PersonDonation.objects.get(id=id)
+    donation.status = DonationStatus.delivered
     donation.qteDelivered = data["qteDelivered"]
     donation.save()
 

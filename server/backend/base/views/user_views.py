@@ -10,6 +10,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 import uuid
 
+
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
@@ -36,7 +37,7 @@ def registerUser(request):
         username=data["email"],
         is_staff=data["is_staff"],
         password=make_password(data["password"]),
-        id = uuid.uuid4
+        id=uuid.uuid4,
     )
     """ if data["is_staff"]:
         AssociationProfile.objects.create(
@@ -64,6 +65,50 @@ def registerUser(request):
             address=data["address"],
             address2=data["address2"],
         ) """
+
+    serializer = UserSerializerWithToken(user, many=False)
+    return Response(serializer.data)
+
+
+@api_view(["POST"])
+def registerUserAndProfile(request):
+    data = request.data
+    wilaya = Wilaya.objects.get(id=data["wilaya"])
+    user = User.objects.create(
+        first_name=data["first_name"],
+        last_name=data["last_name"],
+        email=data["email"],
+        username=data["email"],
+        is_staff=data["is_staff"],
+        password=make_password(data["password"]),
+        id=uuid.uuid4,
+    )
+    if data["is_staff"]:
+        AssociationProfile.objects.create(
+            user=user,
+            phone=data["phone"],
+            fax=data["fax"],
+            name=data["name"],
+            activity=data["activity"],
+            associationNumber=data["associationNumber"],
+            logo=data["logo"],
+            coverImage=data["coverImage"],
+            facebook=data["facebook"],
+            twitter=data["twitter"],
+            baseWilaya=wilaya,
+        )
+    else:
+        PersonProfile.objects.create(
+            user=user,
+            phone=data["phone"],
+            image=data["image"],
+            isMale=data["isMale"],
+            dateOfBirth=data["dateOfBirth"],
+            profession=data["profession"],
+            wilaya=wilaya,
+            address=data["address"],
+            address2=data["address2"],
+        )
 
     serializer = UserSerializerWithToken(user, many=False)
     return Response(serializer.data)

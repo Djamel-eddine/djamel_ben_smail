@@ -1,3 +1,4 @@
+from backend.base.constants.donation_status import DonationStatus
 import enum
 from django.db import models
 from django.contrib.auth.models import User
@@ -194,11 +195,11 @@ class Comment(models.Model):
 class PersonDonation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     compaign = models.ForeignKey(Compaign, on_delete=models.CASCADE, null=True)
-    need = models.ForeignKey(Need, on_delete=models.CASCADE, null=True)
+    compaignNeed = models.ForeignKey(CompaignNeeds, on_delete=models.CASCADE, null=True)
     qteDonated = models.FloatField(default=1)
     qteAccepted = models.FloatField(default=0)
     qteDelivered = models.FloatField(default=0)
-    status = models.FloatField(default=1)
+    status = models.IntegerChoices(default=DonationStatus.wait)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 
