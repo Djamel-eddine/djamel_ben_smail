@@ -36,7 +36,7 @@ def getCompaignComments(request, compaignID):
 @permission_classes([IsAuthenticated])
 def createComment(request):
     data = request.data
-    user = User.objects.get(id=data["user"])
+    user = request.user
     compaign = Compaign.objects.get(id=data["compaign"])
     comment = Comment.objects.create(payload=data["payload"], title=data["title"], user=user, compaign=compaign)
     serializer = CommentSerializer(comment, many=False)

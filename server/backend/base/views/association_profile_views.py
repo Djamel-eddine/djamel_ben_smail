@@ -27,7 +27,7 @@ def getAssociationProfile(request, id):
 @permission_classes([IsAuthenticated])
 def createAssociationProfile(request):
     data = request.data
-    user = User.objects.get(id=data["user"])
+    user = request.user
     wilaya = Wilaya.objects.get(id=data["wilaya"])
     profile = AssociationProfile.objects.create(
         user=user,

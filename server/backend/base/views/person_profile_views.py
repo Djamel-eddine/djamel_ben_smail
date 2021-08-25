@@ -27,7 +27,7 @@ def getPersonProfile(request, id):
 @permission_classes([IsAuthenticated])
 def createPersonProfile(request):
     data = request.data
-    user = User.objects.get(id=data["user"])
+    user = request.user
     wilaya = Wilaya.objects.get(id=data["wilaya"])
     profile = PersonProfile.objects.create(
         user=user,

@@ -35,7 +35,7 @@ def getCompaignReactions(request, compaignID):
 @permission_classes([IsAuthenticated])
 def createPersonCompaignReaction(request):
     data = request.data
-    user = User.objects.get(id=data["user"])
+    user = request.user
     compaign = Compaign.objects.get(id=data["compaign"])
     wilaya = PersonCompaignReaction.objects.create(user=user, compaign=compaign, isLike=data["isLike"])
     serializer = PersonCompaignReactionSerializer(wilaya, many=False)

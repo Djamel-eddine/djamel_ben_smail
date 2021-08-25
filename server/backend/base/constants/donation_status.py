@@ -2,7 +2,7 @@ from enum import Enum
 
 
 class DonationStatus(Enum):
-    wait = 1
-    accepted = 2
-    delivered = 3
-    refused = 4
+    wait = 0
+    accepted = 1
+    delivered = 2
+    refused = 3
