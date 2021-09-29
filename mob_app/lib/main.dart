@@ -1,9 +1,14 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'api/compaign.dart';
 
 void main() {
   runApp(MyApp());
 }
 
+// ignore: must_be_immutable
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   var primary = 0x009688;
@@ -18,28 +23,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        primaryColor: Color(primary),
-        primaryColorDark: Color(darkPrimary),
-        primaryColorLight: Color(lightPrimary),
-        iconTheme: IconThemeData(color: Color(textAndIcon)),
-        accentColor: Color(accent),
-        primaryTextTheme:
-            TextTheme(headline4: TextStyle(color: Color(textPrimary))),
-        secondaryHeaderColor: Color(textSecondary),
-        dividerColor: Color(dividerColor),
-      ),
-      home: MyHomePage(title: 'Ben Smail'),
+      home: MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-
-  final String title;
+  MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -48,11 +38,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
+    getAllCompaigns();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('widget.title'),
       ),
-      body: Container(),
+      body: Container(child: Text('here we go')),
     );
   }
 }

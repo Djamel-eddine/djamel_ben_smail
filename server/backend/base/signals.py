@@ -1,4 +1,4 @@
-from backend.base.constants.donation_status import DonationStatus
+from base.constants.donation_status import DonationStatus
 from django.db.models.signals import pre_save, post_save
 from django.contrib.auth.models import User
 from base.models import Compaign, PersonCompaignReaction, PersonDonation, CompaignNeeds

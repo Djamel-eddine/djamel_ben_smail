@@ -1,4 +1,4 @@
-from backend.base.constants.donation_status import DonationStatus
+from base.constants.donation_status import DonationStatus
 import enum
 from django.db import models
 from django.contrib.auth.models import User
@@ -199,7 +199,7 @@ class PersonDonation(models.Model):
     qteDonated = models.FloatField(default=1)
     qteAccepted = models.FloatField(default=0)
     qteDelivered = models.FloatField(default=0)
-    status = models.IntegerChoices(default=DonationStatus.wait)
+    status = models.IntegerField(default=DonationStatus.wait)
     createdAt = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
 

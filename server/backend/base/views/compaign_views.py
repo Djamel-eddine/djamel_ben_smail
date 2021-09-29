@@ -1,4 +1,4 @@
-from backend.base.models import Wilaya
+from base.models import Wilaya
 from base.models import Compaign, Type
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated

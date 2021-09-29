@@ -11,7 +11,7 @@ urlpatterns = [
     path("update_accepted_qte/<str:id>/", views.updatePersonDonationAcceptedQte, name="update-donation-accepted-qte"),
     path("update_delivered_qte/<str:id>/", views.updatePersonDonationDeliverdQte, name="update-donation-delivered-qte"),
     path("", views.getAllDonations, name="get-donations"),
-    path("<id:str>/", views.getDonationById, name="get-donation"),
+    path("<str:id>/", views.getDonationById, name="get-donation"),
     path("association?<str:associationID>/", views.getAssociationDonations, name="get_association_donations"),
     path(
         "user?<str:userID>/compaign?<compaignID>/",
